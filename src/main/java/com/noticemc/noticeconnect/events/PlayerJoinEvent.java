@@ -3,18 +3,18 @@
  *
  * Written in 2021  by Nikomaru <nikomaru@nikomaru.dev>
  *
- *     To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide.
- *     This software is distributed without any warranty.
+ *   To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide.
+ *   This software is distributed without any warranty.
  *
- *     You should have received a copy of the CC0 Public Domain Dedication along with this software.
- *     If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ *   You should have received a copy of the CC0 Public Domain Dedication along with this software.
+ *   If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package com.noticemc.noticejoin.events;
+package com.noticemc.noticeconnect.events;
 
-import com.noticemc.noticejoin.NoticeJoin;
-import com.noticemc.noticejoin.database.Database;
-import com.noticemc.noticejoin.files.CustomConfig;
+import com.noticemc.noticeconnect.NoticeConnect;
+import com.noticemc.noticeconnect.database.Database;
+import com.noticemc.noticeconnect.files.CustomConfig;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.proxy.Player;
@@ -37,13 +37,13 @@ public class PlayerJoinEvent {
 
         Player player = event.getPlayer();
         String serverName = player.getCurrentServer().get().getServerInfo().getName();
-        final ProxyServer proxyServer = NoticeJoin.getProxy();
+        final ProxyServer proxyServer = NoticeConnect.getProxy();
         if (event.getPreviousServer() == null) {
 
             if (playerExists(player.getUniqueId())) {
                 proxyServer.sendMessage((text(player.getUsername(), TextColor.fromHexString("#fba700"))).append(
-                                text("さんが", TextColor.fromHexString("#fbfb54")))
-                        .append(text(Objects.requireNonNull(CustomConfig.getConfig().getNode("server").getNode("name").getString()),
+                                text("さんが", TextColor.fromHexString("#fbfb54"))).append(text(
+                                Objects.requireNonNull(CustomConfig.getConfig().getNode("server").getNode("name").getString()),
                                 TextColor.fromHexString("#fba700")))
                         .append(text("(" + serverName + ")", TextColor.fromHexString("#a8a7a8")))
                         .append(text("にやってきました!", TextColor.fromHexString("#fba700"))));
@@ -51,7 +51,7 @@ public class PlayerJoinEvent {
                 proxyServer.sendMessage((text("[", TextColor.fromHexString("#a7a7a7"))).append(
                                 text("初見さんいらっしゃい", TextColor.fromHexString("#fbfb54")))
                         .append(text("]", TextColor.fromHexString("#a7a7a7")))
-                        .append(text(player.getUsername() + "さんがはじめて" + serverName + "サ－バ－にやってきました",
+                        .append(text(player.getUsername() + "さんがはじめて" + serverName + "サーバーにやってきました",
                                 TextColor.fromHexString("#fb54fb"))));
                 addPlayerLoginData(player.getUniqueId());
             }

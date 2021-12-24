@@ -32,10 +32,10 @@
 #       Busybox and similar reduced shells will NOT work, because this script
 #       requires all of these POSIX shell features:
 #         * functions;
-#         * expansions á$varâ, á${var}â, á${var:-default}â, á${var+SET}â,
-#           á${var#prefix}â, á${var%suffix}â, and á$( cmd )â;
-#         * compound commands having a testable exit status, especially ácaseâ;
-#         * various built-in commands including ácommandâ, ásetâ, and áulimitâ.
+#         * expansions ï¿½ï¿½$varï¿½ï¿½, ï¿½ï¿½${var}ï¿½ï¿½, ï¿½ï¿½${var:-default}ï¿½ï¿½, ï¿½ï¿½${var+SET}ï¿½ï¿½,
+#           ï¿½ï¿½${var#prefix}ï¿½ï¿½, ï¿½ï¿½${var%suffix}ï¿½ï¿½, and ï¿½ï¿½$( cmd )ï¿½ï¿½;
+#         * compound commands having a testable exit status, especially ï¿½ï¿½caseï¿½ï¿½;
+#         * various built-in commands including ï¿½ï¿½commandï¿½ï¿½, ï¿½ï¿½setï¿½ï¿½, and ï¿½ï¿½ulimitï¿½ï¿½.
 #
 #   Important for patching:
 #

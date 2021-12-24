@@ -48,7 +48,7 @@ shadowJar {
 
 jar{
     manifest {
-        attributes 'Main-Class': 'com.noticemc.noticejoin.NoticeJoin'
+        attributes 'Main-Class': 'com.noticemc.connect.NoticeConnect'
     }
 }
 
@@ -69,5 +69,3 @@ sourceSets.main.java.srcDir(generateTemplates.map { it.outputs })
 
 rootProject.idea.project.settings.taskTriggers.afterSync generateTemplates
 project.eclipse.synchronizationTasks(generateTemplates)
-
-

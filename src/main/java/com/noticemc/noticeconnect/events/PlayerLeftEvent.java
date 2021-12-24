@@ -3,17 +3,17 @@
  *
  * Written in 2021  by Nikomaru <nikomaru@nikomaru.dev>
  *
- *     To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide.
- *     This software is distributed without any warranty.
+ *   To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide.
+ *   This software is distributed without any warranty.
  *
- *     You should have received a copy of the CC0 Public Domain Dedication along with this software.
- *     If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ *   You should have received a copy of the CC0 Public Domain Dedication along with this software.
+ *   If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package com.noticemc.noticejoin.events;
+package com.noticemc.noticeconnect.events;
 
-import com.noticemc.noticejoin.NoticeJoin;
-import com.noticemc.noticejoin.files.CustomConfig;
+import com.noticemc.noticeconnect.NoticeConnect;
+import com.noticemc.noticeconnect.files.CustomConfig;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.proxy.Player;
@@ -28,12 +28,12 @@ public class PlayerLeftEvent {
     @Subscribe
     public void onLeft(DisconnectEvent event) {
         Player player = event.getPlayer();
-        if(player.getCurrentServer().isEmpty()){
+        if (player.getCurrentServer().isEmpty()) {
             return;
         }
         String leftServer = player.getCurrentServer().get().getServerInfo().getName();
-        final ProxyServer proxyServer = NoticeJoin.getProxy();
-        if(leftServer == null) {
+        final ProxyServer proxyServer = NoticeConnect.getProxy();
+        if (leftServer == null) {
             leftServer = "Unknown";
         }
 

@@ -3,16 +3,16 @@
  *
  * Written in 2021  by Nikomaru <nikomaru@nikomaru.dev>
  *
- *     To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide.
- *     This software is distributed without any warranty.
+ *   To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide.
+ *   This software is distributed without any warranty.
  *
- *     You should have received a copy of the CC0 Public Domain Dedication along with this software.
- *     If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ *   You should have received a copy of the CC0 Public Domain Dedication along with this software.
+ *   If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package com.noticemc.noticejoin.database;
+package com.noticemc.noticeconnect.database;
 
-import com.noticemc.noticejoin.files.CustomConfig;
+import com.noticemc.noticeconnect.files.CustomConfig;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 
 import java.sql.Connection;
@@ -46,7 +46,7 @@ public class Database {
     public void connect() throws Exception {
         CommentedConfigurationNode databaseNode = CustomConfig.getConfig().getNode("database");
         if (!isConnected()) {
-                Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(
                     "jdbc:mysql://" + Objects.requireNonNull(databaseNode).getNode("host")
                             .getString() + ":" + databaseNode.getNode("port").getInt() + "/" + databaseNode.getNode(

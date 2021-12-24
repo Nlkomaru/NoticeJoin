@@ -3,20 +3,20 @@
  *
  * Written in 2021  by Nikomaru <nikomaru@nikomaru.dev>
  *
- *     To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide.
- *     This software is distributed without any warranty.
+ *   To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide.
+ *   This software is distributed without any warranty.
  *
- *     You should have received a copy of the CC0 Public Domain Dedication along with this software.
- *     If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ *   You should have received a copy of the CC0 Public Domain Dedication along with this software.
+ *   If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package com.noticemc.noticejoin;
+package com.noticemc.noticeconnect;
 
 import com.google.inject.Inject;
-import com.noticemc.noticejoin.database.Database;
-import com.noticemc.noticejoin.events.PlayerJoinEvent;
-import com.noticemc.noticejoin.events.PlayerLeftEvent;
-import com.noticemc.noticejoin.files.CustomConfig;
+import com.noticemc.noticeconnect.database.Database;
+import com.noticemc.noticeconnect.events.PlayerJoinEvent;
+import com.noticemc.noticeconnect.events.PlayerLeftEvent;
+import com.noticemc.noticeconnect.files.CustomConfig;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
@@ -26,11 +26,15 @@ import org.slf4j.Logger;
 
 import java.nio.file.Path;
 
-@Plugin(id = "noticejoin", name = "NoticeJoin", version = "1.0-SNAPSHOT", authors = {"Nikomaru"})
-public class NoticeJoin {
-    Database sql = null;
+@Plugin(id = "noticeconnect", name = "NoticeConnect", version = "1.0-SNAPSHOT", authors = {"Nikomaru"})
+public class NoticeConnect {
     private static ProxyServer proxyServer = null;
+    Database sql = null;
     private Logger logger;
+
+    public static ProxyServer getProxy() {
+        return proxyServer;
+    }
 
     @Inject
     public void noticeJoin(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
@@ -60,11 +64,6 @@ public class NoticeJoin {
         }
         Database.initializeDatabase();
     }
-
-    public static ProxyServer getProxy(){
-        return proxyServer;
-    }
-
 
 
 }
