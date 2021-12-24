@@ -39,7 +39,7 @@ public class PlayerLeftEvent {
 
         proxyServer.sendMessage((text(player.getUsername(), TextColor.fromHexString("#fba700"))).append(
                         text("さんが", TextColor.fromHexString("#fbfb54"))).append(text(
-                        Objects.requireNonNull(CustomConfig.getConfig().getNode("server").getNode("name").getString()),
+                        Objects.requireNonNull(CustomConfig.getConfig().node("server","name").getString()),
                         TextColor.fromHexString("#fba700")))
                 .append(text("(" + leftServer + ")", TextColor.fromHexString("#a8a7a8")))
                 .append(text("から離れました", TextColor.fromHexString("#fbfb54"))));

@@ -12,9 +12,9 @@
 
 package com.noticemc.noticeconnect.files;
 
-import ninja.leaping.configurate.commented.CommentedConfigurationNode;
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
-import ninja.leaping.configurate.loader.ConfigurationLoader;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import org.spongepowered.configurate.loader.ConfigurationLoader;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,8 +52,7 @@ public class CustomConfig {
                 return;
             }
         }
-        ConfigurationLoader<CommentedConfigurationNode> configManager = HoconConfigurationLoader.builder().setFile(file)
-                .build();
+        ConfigurationLoader<CommentedConfigurationNode> configManager = HoconConfigurationLoader.builder().path(file.toPath()).build();
         try {
             config = configManager.load();
         } catch (IOException e) {

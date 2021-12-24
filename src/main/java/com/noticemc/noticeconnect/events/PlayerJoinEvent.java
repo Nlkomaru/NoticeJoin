@@ -19,6 +19,7 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 
 import java.sql.Connection;
@@ -35,6 +36,7 @@ public class PlayerJoinEvent {
     @Subscribe
     public void onJoin(ServerPostConnectEvent event) {
 
+        
         Player player = event.getPlayer();
         String serverName = player.getCurrentServer().get().getServerInfo().getName();
         final ProxyServer proxyServer = NoticeConnect.getProxy();
@@ -43,7 +45,7 @@ public class PlayerJoinEvent {
             if (playerExists(player.getUniqueId())) {
                 proxyServer.sendMessage((text(player.getUsername(), TextColor.fromHexString("#fba700"))).append(
                                 text("さんが", TextColor.fromHexString("#fbfb54"))).append(text(
-                                Objects.requireNonNull(CustomConfig.getConfig().getNode("server").getNode("name").getString()),
+                                Objects.requireNonNull(CustomConfig.getConfig().node("server","name").getString()),
                                 TextColor.fromHexString("#fba700")))
                         .append(text("(" + serverName + ")", TextColor.fromHexString("#a8a7a8")))
                         .append(text("にやってきました!", TextColor.fromHexString("#fba700"))));

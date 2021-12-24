@@ -13,7 +13,7 @@
 package com.noticemc.noticeconnect.database;
 
 import com.noticemc.noticeconnect.files.CustomConfig;
-import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import org.spongepowered.configurate.CommentedConfigurationNode;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -44,14 +44,14 @@ public class Database {
     }
 
     public void connect() throws Exception {
-        CommentedConfigurationNode databaseNode = CustomConfig.getConfig().getNode("database");
+        CommentedConfigurationNode databaseNode = CustomConfig.getConfig().node("database");
         if (!isConnected()) {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + Objects.requireNonNull(databaseNode).getNode("host")
-                            .getString() + ":" + databaseNode.getNode("port").getInt() + "/" + databaseNode.getNode(
-                            "database").getString() + "?useSSL=false", databaseNode.getNode("user").getString(),
-                    databaseNode.getNode("password").getString());
+                    "jdbc:mysql://" + Objects.requireNonNull(databaseNode).node("host")
+                            .getString() + ":" + databaseNode.node("port").getInt() + "/" + databaseNode.node(
+                            "database").getString() + "?useSSL=false", databaseNode.node("user").getString(),
+                    databaseNode.node("password").getString());
         }
     }
 
