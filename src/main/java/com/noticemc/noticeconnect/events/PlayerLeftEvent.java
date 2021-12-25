@@ -18,11 +18,10 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.Template;
 
 import java.util.Objects;
-
-import static net.kyori.adventure.text.Component.text;
 
 public class PlayerLeftEvent {
     @Subscribe
@@ -31,17 +30,17 @@ public class PlayerLeftEvent {
         if (player.getCurrentServer().isEmpty()) {
             return;
         }
-        String leftServer = player.getCurrentServer().get().getServerInfo().getName();
+        String serverName = player.getCurrentServer().get().getServerInfo().getName();
         final ProxyServer proxyServer = NoticeConnect.getProxy();
-        if (leftServer == null) {
-            leftServer = "Unknown";
+        if (serverName == null) {
+            serverName = "Unknown";
         }
 
-        proxyServer.sendMessage((text(player.getUsername(), TextColor.fromHexString("#fba700"))).append(
-                        text("さんが", TextColor.fromHexString("#fbfb54"))).append(text(
-                        Objects.requireNonNull(CustomConfig.getConfig().node("server","name").getString()),
-                        TextColor.fromHexString("#fba700")))
-                .append(text("(" + leftServer + ")", TextColor.fromHexString("#a8a7a8")))
-                .append(text("から離れました", TextColor.fromHexString("#fbfb54"))));
+        String loginMessage = CustomConfig.getConfig().node("message", "left").getString();
+        proxyServer.sendMessage(MiniMessage.get()
+                .parse(Objects.requireNonNull(loginMessage), Template.of("name", player.getUsername()),
+                        Template.of("serverName", Objects.requireNonNull(
+                                CustomConfig.getConfig().node("server", "name").getString())),
+                        Template.of("currentServerName", serverName)));
     }
 }
