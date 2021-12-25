@@ -9,6 +9,6 @@ A login message plugin that runs on Velocity
 To the extent possible under law,
 [<span property="dct:title">Nikomaru</span>](https://github.com/Nlkomaru/)
 has waived all copyright and related or neighboring rights to
-<span property="dct:title">NoticeJoin</span>.
+<span property="dct:title">NoticeConnect</span>.
 This work is published from:
-<span property="vcard:Country" datatype="dct:ISO3166" content="JP" about="https://github.com/Nlkomaru/NoticeJoin">日本</span>.
+<span property="vcard:Country" datatype="dct:ISO3166" content="JP" about="https://github.com/Nlkomaru/NoticeConnect">日本</span>.
