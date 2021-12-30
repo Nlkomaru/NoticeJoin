@@ -14,7 +14,7 @@ This work is published from:
 <span property="vcard:Country" datatype="dct:ISO3166" content="JP" about="https://github.com/Nlkomaru/NoticeConnect">日本</span>.
 
 
-##Transfar Hint
+## Transfar Hint
 Please run it in your own kotlin environment.
 You will also need the server directory and the database output location.
 
