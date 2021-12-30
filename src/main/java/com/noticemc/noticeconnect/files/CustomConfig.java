@@ -52,7 +52,8 @@ public class CustomConfig {
                 return;
             }
         }
-        ConfigurationLoader<CommentedConfigurationNode> configManager = HoconConfigurationLoader.builder().path(file.toPath()).build();
+        ConfigurationLoader<CommentedConfigurationNode> configManager = HoconConfigurationLoader.builder()
+                .path(file.toPath()).build();
         try {
             config = configManager.load();
         } catch (IOException e) {

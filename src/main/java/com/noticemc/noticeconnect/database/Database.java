@@ -12,9 +12,12 @@
 
 package com.noticemc.noticeconnect.database;
 
+import com.google.inject.Inject;
 import com.noticemc.noticeconnect.files.CustomConfig;
+import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -22,6 +25,9 @@ import java.sql.SQLException;
 import java.util.Objects;
 
 public class Database {
+
+
+
     public static Connection connection;
 
     public static Connection getConnection() {
@@ -43,15 +49,12 @@ public class Database {
         return connection != null;
     }
 
-    public void connect() throws Exception {
+    public void connect(Path dataDirectory) throws Exception {
         CommentedConfigurationNode databaseNode = CustomConfig.getConfig().node("database");
         if (!isConnected()) {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + Objects.requireNonNull(databaseNode).node("host")
-                            .getString() + ":" + databaseNode.node("port").getInt() + "/" + databaseNode.node(
-                            "database").getString() + "?useSSL=false", databaseNode.node("user").getString(),
-                    databaseNode.node("password").getString());
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection("jdbc:sqlite:" +dataDirectory +"\\"+ databaseNode.node("database")
+                            .getString()+".db");
         }
     }
 

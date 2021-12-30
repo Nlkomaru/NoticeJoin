@@ -19,7 +19,6 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.Template;
 
@@ -28,8 +27,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Objects;
 import java.util.UUID;
-
-import static net.kyori.adventure.text.Component.text;
 
 public class PlayerJoinEvent {
 
@@ -47,20 +44,17 @@ public class PlayerJoinEvent {
                 String loginMessage = CustomConfig.getConfig().node("message", "join").getString();
                 proxyServer.sendMessage(MiniMessage.get()
                         .parse(Objects.requireNonNull(loginMessage), Template.of("name", player.getUsername()),
-                                Template.of("serverName", Objects.requireNonNull(
-                                        CustomConfig.getConfig().node("server", "name").getString())),
                                 Template.of("currentServerName", serverName)));
             } else {
                 String loginMessage = CustomConfig.getConfig().node("message", "firstJoin").getString();
                 proxyServer.sendMessage(MiniMessage.get()
                         .parse(Objects.requireNonNull(loginMessage), Template.of("name", player.getUsername()),
-                                Template.of("serverName", Objects.requireNonNull(
-                                        CustomConfig.getConfig().node("server", "name").getString())),
                                 Template.of("currentServerName", serverName)));
                 addPlayerLoginData(player.getUniqueId());
             }
         }
     }
+
 
     private boolean playerExists(UUID uuid) {
         boolean playerExists = false;

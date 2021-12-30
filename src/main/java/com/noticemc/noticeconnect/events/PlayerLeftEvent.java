@@ -39,8 +39,6 @@ public class PlayerLeftEvent {
         String loginMessage = CustomConfig.getConfig().node("message", "left").getString();
         proxyServer.sendMessage(MiniMessage.get()
                 .parse(Objects.requireNonNull(loginMessage), Template.of("name", player.getUsername()),
-                        Template.of("serverName", Objects.requireNonNull(
-                                CustomConfig.getConfig().node("server", "name").getString())),
                         Template.of("currentServerName", serverName)));
     }
 }

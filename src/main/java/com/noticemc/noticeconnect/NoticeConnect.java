@@ -31,6 +31,7 @@ public class NoticeConnect {
     private static ProxyServer proxyServer = null;
     Database sql = null;
     private Logger logger;
+    private Path dir;
 
     public static ProxyServer getProxy() {
         return proxyServer;
@@ -40,6 +41,7 @@ public class NoticeConnect {
     public void noticeConnect(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         proxyServer = server;
         this.logger = logger;
+        dir = dataDirectory;
         CustomConfig config = new CustomConfig();
         config.getConfigFile(dataDirectory);
         sqlConnection();
@@ -54,7 +56,7 @@ public class NoticeConnect {
     private void sqlConnection() {
         sql = new Database();
         try {
-            sql.connect();
+            sql.connect(dir);
         } catch (Exception e) {
             logger.error("Failed to connect to database");
             e.printStackTrace();

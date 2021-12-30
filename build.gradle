@@ -27,9 +27,9 @@ repositories {
 dependencies {
     compileOnly 'com.velocitypowered:velocity-api:3.1.0'
     annotationProcessor 'com.velocitypowered:velocity-api:3.1.0'
-    implementation 'mysql:mysql-connector-java:8.0.27'
-    implementation  'org.spongepowered:configurate-hocon:4.0.0'
+    implementation 'org.spongepowered:configurate-hocon:4.1.2'
     implementation "net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT"
+    implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
 }
 
 def targetJavaVersion = 11
@@ -50,12 +50,6 @@ tasks.withType(JavaCompile).configureEach {
 
 shadowJar {
     mergeServiceFiles()
-}
-
-jar{
-    manifest {
-        attributes 'Main-Class': 'com.noticemc.connect.NoticeConnect'
-    }
 }
 
 def templateSource = file('src/main/templates')
