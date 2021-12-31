@@ -25,6 +25,8 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 @Plugin(id = "noticeconnect", name = "NoticeConnect", version = "1.0-SNAPSHOT", authors = {"Nikomaru"})
 public class NoticeConnect {
@@ -45,6 +47,20 @@ public class NoticeConnect {
         CustomConfig config = new CustomConfig();
         config.getConfigFile(dataDirectory);
         sqlConnection();
+        logger.info("今までに"+getJoinedPlayerCount()+"人のプレイヤーがサーバーを訪れました");
+    }
+
+    private int getJoinedPlayerCount() {
+        int count = 0;
+        try {
+            Connection connection = Database.getConnection();
+            PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM JoinedPlayerList");
+            count = statement.executeQuery().getInt(1);
+            statement.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 
     @Subscribe
