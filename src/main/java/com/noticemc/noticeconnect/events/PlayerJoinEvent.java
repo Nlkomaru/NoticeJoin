@@ -34,7 +34,6 @@ public class PlayerJoinEvent {
     @Subscribe
     public void onJoin(ServerPostConnectEvent event) {
 
-
         Player player = event.getPlayer();
         String serverName = player.getCurrentServer().get().getServerInfo().getName();
         final ProxyServer proxyServer = NoticeConnect.getProxy();

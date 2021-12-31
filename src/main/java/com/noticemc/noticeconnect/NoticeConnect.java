@@ -61,7 +61,7 @@ public class NoticeConnect {
             logger.error("Failed to connect to database");
             e.printStackTrace();
         }
-        if (sql.isConnected()) {
+        if (Database.isConnected()) {
             logger.info("Connected to database");
         }
         Database.initializeDatabase();

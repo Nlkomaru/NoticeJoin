@@ -12,17 +12,15 @@
 
 package com.noticemc.noticeconnect.database;
 
-import com.google.inject.Inject;
 import com.noticemc.noticeconnect.files.CustomConfig;
-import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Objects;
 
 public class Database {
 
@@ -45,7 +43,7 @@ public class Database {
         }
     }
 
-    public boolean isConnected() {
+    public static boolean isConnected() {
         return connection != null;
     }
 
@@ -53,12 +51,16 @@ public class Database {
         CommentedConfigurationNode databaseNode = CustomConfig.getConfig().node("database");
         if (!isConnected()) {
             Class.forName("org.sqlite.JDBC");
-            connection = DriverManager.getConnection("jdbc:sqlite:" +dataDirectory +"\\"+ databaseNode.node("database")
-                            .getString()+".db");
+            File file = new File(String.valueOf(dataDirectory), databaseNode.node("database")
+                    .getString()+".db");
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+            connection = DriverManager.getConnection("jdbc:sqlite:"+ file.getPath());
         }
     }
 
-    public void disconnect() {
+    public static void disconnect() {
         if (isConnected()) {
             try {
                 connection.close();
