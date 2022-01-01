@@ -3,7 +3,8 @@
  *
  *  Written in 2021  by Nikomaru <nikomaru@nikomaru.dev>
  *
- *      To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide.
+ *      To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the
+ * public domain worldwide.
  *      This software is distributed without any warranty.
  *
  *      You should have received a copy of the CC0 Public Domain Dedication along with this software.
@@ -13,12 +14,18 @@
 package com.noticemc.noticeconnect;
 
 import com.google.inject.Inject;
+import com.mojang.brigadier.context.CommandContext;
+import com.noticemc.noticeconnect.commands.ReloadCommand;
 import com.noticemc.noticeconnect.database.Database;
+import com.noticemc.noticeconnect.discord.SendDiscordChannel;
 import com.noticemc.noticeconnect.events.PlayerJoinEvent;
 import com.noticemc.noticeconnect.events.PlayerLeftEvent;
 import com.noticemc.noticeconnect.files.CustomConfig;
+import com.velocitypowered.api.command.CommandManager;
+import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -27,27 +34,42 @@ import org.slf4j.Logger;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.util.Objects;
 
-@Plugin(id = "noticeconnect", name = "NoticeConnect", version = "1.0-SNAPSHOT", authors = {"Nikomaru"})
+@Plugin(id = "noticeconnect", name = "NoticeConnect", version = "1.0-SNAPSHOT")
 public class NoticeConnect {
+
     private static ProxyServer proxyServer = null;
     Database sql = null;
-    private Logger logger;
-    private Path dir;
+    private static Logger logger;
+    private static Path dir;
 
     public static ProxyServer getProxy() {
         return proxyServer;
     }
 
+    public static Logger getLogger(){
+        return logger;
+    }
+
+    public static Path getPath() {
+        return dir;
+    }
+
     @Inject
     public void noticeConnect(ProxyServer server, Logger logger, @DataDirectory Path dataDirectory) {
         proxyServer = server;
-        this.logger = logger;
+        NoticeConnect.logger = logger;
         dir = dataDirectory;
         CustomConfig config = new CustomConfig();
-        config.getConfigFile(dataDirectory);
+        config.getConfigFile(dir);
         sqlConnection();
-        logger.info("今までに"+getJoinedPlayerCount()+"人のプレイヤーがサーバーを訪れました");
+        logger.info("今までに" + getJoinedPlayerCount() + "人のプレイヤーがサーバーを訪れました");
+
+        if (!(Objects.equals(CustomConfig.getConfig().node("discord", "token").getString(), "")
+                || Objects.equals(CustomConfig.getConfig().node("discord", "channel-id").getString(), ""))) {
+            new SendDiscordChannel();
+        }
     }
 
     private int getJoinedPlayerCount() {
@@ -67,7 +89,12 @@ public class NoticeConnect {
     public void onProxyInitialization(ProxyInitializeEvent event) {
         proxyServer.getEventManager().register(this, new PlayerJoinEvent());
         proxyServer.getEventManager().register(this, new PlayerLeftEvent());
+        CommandManager commandManager = proxyServer.getCommandManager();
+        CommandMeta meta = commandManager.metaBuilder("NoticeConnect")
+                .build();
+        commandManager.register(meta, new ReloadCommand());
     }
+
 
     private void sqlConnection() {
         sql = new Database();

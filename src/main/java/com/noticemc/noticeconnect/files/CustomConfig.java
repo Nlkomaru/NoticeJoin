@@ -3,7 +3,8 @@
  *
  *  Written in 2021  by Nikomaru <nikomaru@nikomaru.dev>
  *
- *      To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide.
+ *      To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the
+ * public domain worldwide.
  *      This software is distributed without any warranty.
  *
  *      You should have received a copy of the CC0 Public Domain Dedication along with this software.
@@ -13,17 +14,16 @@
 package com.noticemc.noticeconnect.files;
 
 import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.loader.ConfigurationLoader;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 
 public class CustomConfig {
+
     static CommentedConfigurationNode config;
 
     static public CommentedConfigurationNode getConfig() {
@@ -39,17 +39,9 @@ public class CustomConfig {
 
         if (!file.exists()) {
             try {
-                InputStream input = this.getClass().getClassLoader().getResourceAsStream("config.conf");
-                if (input != null) {
-                    Files.copy(input, file.toPath());
-                } else {
-                    file.createNewFile();
-                }
-
-                Objects.requireNonNull(input).close();
-            } catch (IOException exception) {
-                exception.printStackTrace();
-                return;
+                ObjectMapperExample.main(file.toPath());
+            } catch (ConfigurateException e) {
+                e.printStackTrace();
             }
         }
         ConfigurationLoader<CommentedConfigurationNode> configManager = HoconConfigurationLoader.builder()
