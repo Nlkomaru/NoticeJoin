@@ -20,12 +20,20 @@ You will also need the server directory and the database output location.
 
 
 ```Kotlin
+//Written in 2022  by Nikomaru <nikomaru@nikomaru.dev>
+//
+//To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide.
+//This software is distributed without any warranty.
+//
+//You should have received a copy of the CC0 Public Domain Dedication along with this software.
+//If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
 
 fun main(args: Array<String>) {
-  
+
     Class.forName("org.sqlite.JDBC")
-    val connection: Connection = DriverManager.getConnection("jdbc:sqlite:Any directory\\NoticeConnect.db")
-    val path = "Any directory\\purpur 1.18.1\\world\\advancements\\"
+    val connection: Connection =
+        DriverManager.getConnection("jdbc:sqlite:Any Directory${File.separator}NoticeConnect.db")
+    val path = "The path to the server's world directory ${File.separator}playerdata${File.separator}"
     val dir: Path = Path.of(path)
     try {
         val preparedStatement: PreparedStatement = connection.prepareStatement(
@@ -37,23 +45,28 @@ fun main(args: Array<String>) {
         ex.printStackTrace()
     }
 
+    var counter = 0
+    var counter1 = 0
     try {
         Files.list(dir).use { stream ->
             stream.forEach { p: Path ->
-                val uuid = p.toString().replace(path, "").replace(".json","")
-                println(uuid)
-                val statement = connection.prepareStatement("INSERT into JoinedPlayerList (UUID) VALUES (?)")
-                statement.setString(1, uuid)
-                statement.execute()
-                statement.close()
+                if (!p.toString().contains("dat_old")) {
+                    val uuid = p.toString().replace(path, "").replace(".dat", "")
+                    println(uuid)
+                    val statement = connection.prepareStatement("INSERT into JoinedPlayerList (UUID) VALUES (?)")
+                    statement.setString(1, uuid)
+                    statement.execute()
+                    statement.close()
+                    counter++
+                }
+                counter1++
             }
         }
     } catch (e: IOException) {
         e.printStackTrace()
     }
-     connection.close()
+    connection.close()
+    println("$counter $counter1 players added to the database")
 
 }
 ```
-
-This code is also licensed under cc0, and writer assumes no responsibility for it.
