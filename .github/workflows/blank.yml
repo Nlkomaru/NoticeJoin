@@ -22,7 +22,7 @@ jobs:
         run: |
           before="${{ steps.tag_version.outputs.new_tag }}"
           after="${before//v/}"
-          sed -i -e "s/\1.0-SNAPSHOT/$after/i" './src/main/java/com/noticemc/noticeconnect/NoticeConnect.java'
+          sed -i -e "s/1.0-SNAPSHOT/$after/i" './src/main/java/com/noticemc/noticeconnect/NoticeConnect.java'
           cat ./src/main/resources/plugin.yml
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
