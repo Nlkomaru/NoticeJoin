@@ -18,12 +18,11 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      - name: change plugin.yml version
+      - name: change plugin version
         run: |
           before="${{ steps.tag_version.outputs.new_tag }}"
           after="${before//v/}"
           sed -i -e "s/1.0-SNAPSHOT/$after/i" './src/main/java/com/noticemc/noticeconnect/NoticeConnect.java'
-          cat ./src/main/resources/plugin.yml
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
       - name: Build with Gradle
