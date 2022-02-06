@@ -14,18 +14,17 @@
 package com.noticemc.noticeconnect;
 
 import com.google.inject.Inject;
-import com.mojang.brigadier.context.CommandContext;
 import com.noticemc.noticeconnect.commands.ReloadCommand;
 import com.noticemc.noticeconnect.database.Database;
 import com.noticemc.noticeconnect.discord.SendDiscordChannel;
 import com.noticemc.noticeconnect.events.PlayerJoinEvent;
 import com.noticemc.noticeconnect.events.PlayerLeftEvent;
+import com.noticemc.noticeconnect.events.PlayerLoginEvent;
 import com.noticemc.noticeconnect.files.CustomConfig;
 import com.velocitypowered.api.command.CommandManager;
 import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
-import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -48,7 +47,7 @@ public class NoticeConnect {
         return proxyServer;
     }
 
-    public static Logger getLogger(){
+    public static Logger getLogger() {
         return logger;
     }
 
@@ -66,8 +65,8 @@ public class NoticeConnect {
         sqlConnection();
         logger.info("今までに" + getJoinedPlayerCount() + "人のプレイヤーがサーバーを訪れました");
 
-        if (!(Objects.equals(CustomConfig.getConfig().node("discord", "token").getString(), "")
-                || Objects.equals(CustomConfig.getConfig().node("discord", "channel-id").getString(), ""))) {
+        if (!(Objects.equals(CustomConfig.getConfig().node("discord", "token").getString(), "") || Objects.equals(
+                CustomConfig.getConfig().node("discord", "channel-id").getString(), ""))) {
             new SendDiscordChannel();
         }
     }
@@ -89,9 +88,9 @@ public class NoticeConnect {
     public void onProxyInitialization(ProxyInitializeEvent event) {
         proxyServer.getEventManager().register(this, new PlayerJoinEvent());
         proxyServer.getEventManager().register(this, new PlayerLeftEvent());
+        proxyServer.getEventManager().register(this, new PlayerLoginEvent());
         CommandManager commandManager = proxyServer.getCommandManager();
-        CommandMeta meta = commandManager.metaBuilder("NoticeConnect")
-                .build();
+        CommandMeta meta = commandManager.metaBuilder("NoticeConnect").build();
         commandManager.register(meta, new ReloadCommand());
     }
 

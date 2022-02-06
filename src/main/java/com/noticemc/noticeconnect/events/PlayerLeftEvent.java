@@ -44,23 +44,27 @@ public class PlayerLeftEvent {
             serverName = CustomConfig.getConfig().node("replace").node(serverName).getString();
         }
 
-        String loginMessage = CustomConfig.getConfig().node("message", "left").getString();
-        proxyServer.sendMessage(MiniMessage.get()
-                .parse(Objects.requireNonNull(loginMessage), Template.of("name", player.getUsername()),
-                        Template.of("currentServerName", Objects.requireNonNull(serverName))));
-
+        String leftMessage = CustomConfig.getConfig().node("message", "left").getString();
+        if (leftMessage != null && !leftMessage.equals("")) {
+            proxyServer.sendMessage(MiniMessage.get()
+                    .parse(Objects.requireNonNull(leftMessage), Template.of("name", player.getUsername()),
+                            Template.of("currentServerName", Objects.requireNonNull(serverName))));
+        }
 
         if (SendDiscordChannel.getTextChannel() == null) {
             return;
         }
 
-        String leftMessage =
+        String discordLeftMessage =
                 (Objects.requireNonNull(CustomConfig.getConfig().node("discord", "message", "left").getString())).replace("%(PlayerName)",
                         player.getUsername());
+        if (discordLeftMessage.equals("")) {
+            return;
+        }
 
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.RED);
-        eb.setAuthor(leftMessage, null, "https://crafthead.net/avatar/" + player.getUniqueId());
+        eb.setAuthor(discordLeftMessage, null, "https://crafthead.net/avatar/" + player.getUniqueId());
         SendDiscordChannel.getTextChannel().sendMessageEmbeds(eb.build()).queue();
     }
 }
