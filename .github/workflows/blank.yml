@@ -22,7 +22,7 @@ jobs:
         run: |
           before="${{ steps.tag_version.outputs.new_tag }}"
           after="${before//v/}"
-          sed -i -e "s/1.0-SNAPSHOT/$after/i" '.src/main/resources/velocity-plugin.json'
+          sed -i -e "s/1.0-SNAPSHOT/$after/i" './src/main/resources/velocity-plugin.json'
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
       - name: Build with Gradle
