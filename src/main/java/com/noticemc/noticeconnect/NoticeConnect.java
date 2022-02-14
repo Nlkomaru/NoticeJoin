@@ -35,7 +35,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Objects;
 
-@Plugin(id = "noticeconnect", name = "NoticeConnect", version = "1.0-SNAPSHOT")
 public class NoticeConnect {
 
     private static ProxyServer proxyServer = null;

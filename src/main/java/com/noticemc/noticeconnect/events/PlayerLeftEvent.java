@@ -32,6 +32,8 @@ public class PlayerLeftEvent {
     @Subscribe
     public void onLeft(DisconnectEvent event) {
         Player player = event.getPlayer();
+        if(player.hasPermission("noticeconnect.hide.left")) return;
+
         if (player.getCurrentServer().isEmpty()) {
             return;
         }

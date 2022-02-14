@@ -22,6 +22,8 @@ import java.util.UUID;
 public class PlayerLoginEvent {
     static HashSet<UUID> list  = new HashSet<>();
     @Subscribe public void onPlayerLogin(PlayerChooseInitialServerEvent event) {
-        list.add(event.getPlayer().getUniqueId());
+        var player = event.getPlayer();
+        if(player.hasPermission("noticeconnect.hide.join")) return;
+        list.add(player.getUniqueId());
     }
 }
