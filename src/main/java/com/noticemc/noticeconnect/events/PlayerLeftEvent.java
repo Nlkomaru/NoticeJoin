@@ -22,7 +22,9 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 
 import java.awt.Color;
 import java.util.Objects;
@@ -32,11 +34,12 @@ public class PlayerLeftEvent {
     @Subscribe
     public void onLeft(DisconnectEvent event) {
         Player player = event.getPlayer();
-        if(player.hasPermission("noticeconnect.hide.left")) return;
+
 
         if (player.getCurrentServer().isEmpty()) {
             return;
         }
+        var mm = MiniMessage.miniMessage();
         String serverName = player.getCurrentServer().get().getServerInfo().getName();
         final ProxyServer proxyServer = NoticeConnect.getProxy();
         if (serverName == null) {
@@ -47,10 +50,13 @@ public class PlayerLeftEvent {
         }
 
         String leftMessage = CustomConfig.getConfig().node("message", "left").getString();
-        if (leftMessage != null && !leftMessage.equals("")) {
-            proxyServer.sendMessage(MiniMessage.get()
-                    .parse(Objects.requireNonNull(leftMessage), Template.of("name", player.getUsername()),
-                            Template.of("currentServerName", Objects.requireNonNull(serverName))));
+        if (leftMessage != null && !leftMessage.equals("") && !player.hasPermission("noticeconnect.hide.left")) {
+
+            var replacedMessage = leftMessage.replace("<name>", player.getUsername()).replace
+                    ("<currentServerName>", Objects.requireNonNull(serverName));
+
+
+            proxyServer.sendMessage(mm.deserialize(replacedMessage));
         }
 
         if (SendDiscordChannel.getTextChannel() == null) {

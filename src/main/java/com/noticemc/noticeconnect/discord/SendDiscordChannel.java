@@ -33,10 +33,9 @@ public class SendDiscordChannel {
     {
         String token = CustomConfig.getConfig().node("discord", "token").getString();
         String channelID = CustomConfig.getConfig().node("discord", "channel-id").getString();
-        EnumSet<GatewayIntent> intent = EnumSet.of(GatewayIntent.GUILD_MESSAGES);
 
         try {
-            jda = JDABuilder.createDefault(token, intent).disableCache(CacheFlag.VOICE_STATE, CacheFlag.EMOTE).build();
+            jda = JDABuilder.createDefault(token, GatewayIntent.GUILD_MESSAGES).disableCache(CacheFlag.VOICE_STATE, CacheFlag.EMOTE).build();
             jda.awaitReady();
         } catch (LoginException | InterruptedException e) {
             e.printStackTrace();

@@ -16,12 +16,13 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.velocitypowered:velocity-api:3.1.0")
-    annotationProcessor("com.velocitypowered:velocity-api:3.1.0")
+    compileOnly("com.velocitypowered:velocity-api:3.0.1")
+    annotationProcessor("com.velocitypowered:velocity-api:3.0.1")
     implementation("org.spongepowered:configurate-hocon:4.1.2")
-    implementation("net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT")
+    implementation("net.kyori:adventure-api:4.10.0")
+    implementation("net.kyori:adventure-text-minimessage:4.10.0")
     implementation("org.xerial:sqlite-jdbc:3.36.0.3")
-    implementation("net.dv8tion:JDA:5.0.0-alpha.3")
+    implementation("net.dv8tion:JDA:5.0.0-alpha.9")
 }
 java {
     val version = JavaVersion.VERSION_17

@@ -23,7 +23,9 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.minimessage.Template;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 
 import java.awt.Color;
 import java.sql.Connection;
@@ -35,53 +37,69 @@ import java.util.UUID;
 public class PlayerJoinEvent {
 
 
-    @Subscribe public void onJoin(ServerPostConnectEvent event) {
+    @Subscribe
+    public void onJoin(ServerPostConnectEvent event) {
 
         Player player = event.getPlayer();
 
-        if(!PlayerLoginEvent.list.remove(player.getUniqueId())) {
+        if (!PlayerLoginEvent.list.remove(player.getUniqueId())) {
             return;
         }
+        if (event.getPreviousServer() != null) {
+            return;
+        }
+        var mm = MiniMessage.miniMessage();
+
         String serverName = player.getCurrentServer().get().getServerInfo().getName();
         final ProxyServer proxyServer = NoticeConnect.getProxy();
         if (CustomConfig.getConfig().node("replace").node(serverName).getString() != null) {
             serverName = CustomConfig.getConfig().node("replace").node(serverName).getString();
         }
-        if (event.getPreviousServer() == null) {
-            EmbedBuilder eb = new EmbedBuilder();
-            String discordJoin;
-            if (playerExists(player.getUniqueId())) {
-                String loginMessage = CustomConfig.getConfig().node("message", "join").getString();
-                if (loginMessage != null && !loginMessage.equals("")) {
-                    proxyServer.sendMessage(MiniMessage.get().parse(Objects.requireNonNull(loginMessage), Template.of("name", player.getUsername()),
-                            Template.of("currentServerName", Objects.requireNonNull(serverName))));
-                }
-                discordJoin = (Objects.requireNonNull(CustomConfig.getConfig().node("discord", "message", "join").getString())).replace("%(PlayerName)",
-                        player.getUsername());
-                eb.setColor(Color.GREEN);
-
-            } else {
-                String loginMessage = CustomConfig.getConfig().node("message", "first-join").getString();
-                if (loginMessage != null && !loginMessage.equals("")) {
-                    proxyServer.sendMessage(MiniMessage.get().parse(Objects.requireNonNull(loginMessage), Template.of("name", player.getUsername()),
-                            Template.of("currentServerName", Objects.requireNonNull(serverName))));
-                    addPlayerLoginData(player.getUniqueId());
-                }
 
 
-                discordJoin = (Objects.requireNonNull(CustomConfig.getConfig().node("discord", "message", "first-join").getString())).replace(
-                        "%" + "(PlayerName)", player.getUsername());
-                eb.setColor(Color.YELLOW);
+
+        EmbedBuilder eb = new EmbedBuilder();
+        String discordJoin;
+        if (playerExists(player.getUniqueId())) {
+            String loginMessage = CustomConfig.getConfig().node("message", "join").getString();
+
+            if (loginMessage != null && !loginMessage.equals("") && !player.hasPermission("noticeconnect.hide.left")) {
+                var replacedMessage = loginMessage.replace("<name>", player.getUsername()).replace
+                        ("<currentServerName>", Objects.requireNonNull(serverName));
+
+                proxyServer.sendMessage(mm.deserialize(replacedMessage));
 
             }
 
-            if (SendDiscordChannel.getTextChannel() == null || discordJoin.equals("")) {
-                return;
+            discordJoin = (Objects.requireNonNull(
+                    CustomConfig.getConfig().node("discord", "message", "join").getString())).replace("%(PlayerName)",
+                    player.getUsername());
+
+            eb.setColor(Color.GREEN);
+
+        } else {
+            String loginMessage = CustomConfig.getConfig().node("message", "first-join").getString();
+
+            if (loginMessage != null && !loginMessage.equals("")) {
+                var replacedMessage = loginMessage.replace("<name>", player.getUsername()).replace
+                        ("<currentServerName>", Objects.requireNonNull(serverName));
+
+                proxyServer.sendMessage(mm.deserialize(replacedMessage));
+                addPlayerLoginData(player.getUniqueId());
             }
-            eb.setAuthor(discordJoin, null, "https://crafthead.net/avatar/" + player.getUniqueId());
-            SendDiscordChannel.getTextChannel().sendMessageEmbeds(eb.build()).queue();
+
+            discordJoin = (Objects.requireNonNull(
+                    CustomConfig.getConfig().node("discord", "message", "first-join").getString())).replace(
+                    "%" + "(PlayerName)", player.getUsername());
+            eb.setColor(Color.YELLOW);
 
         }
+
+        if (SendDiscordChannel.getTextChannel() == null || discordJoin.equals("")) {
+            return;
+        }
+        eb.setAuthor(discordJoin, null, "https://crafthead.net/avatar/" + player.getUniqueId());
+        SendDiscordChannel.getTextChannel().sendMessageEmbeds(eb.build()).queue();
     }
 
 
