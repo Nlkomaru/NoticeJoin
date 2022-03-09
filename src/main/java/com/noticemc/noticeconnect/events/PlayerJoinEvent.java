@@ -63,7 +63,7 @@ public class PlayerJoinEvent {
         if (playerExists(player.getUniqueId())) {
             String loginMessage = CustomConfig.getConfig().node("message", "join").getString();
 
-            if (loginMessage != null && !loginMessage.equals("") && !player.hasPermission("noticeconnect.hide.left")) {
+            if (loginMessage != null && !loginMessage.equals("") && !player.hasPermission("noticeconnect.hide.join")) {
                 var replacedMessage = loginMessage.replace("<name>", player.getUsername()).replace
                         ("<currentServerName>", Objects.requireNonNull(serverName));
 
