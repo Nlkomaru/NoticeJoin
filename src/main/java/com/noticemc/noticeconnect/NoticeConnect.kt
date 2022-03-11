@@ -40,7 +40,7 @@ class NoticeConnect {
         config.getConfigFile(path)
         sqlConnection()
         logger.info("今までに" + joinedPlayerCount() + "人のプレイヤーがサーバーを訪れました")
-        if (!(CustomConfig.config.node("discord", "token")?.string == "" || CustomConfig.config.node("discord", "channel-id").string == "")) {
+        if (!(CustomConfig.config.node("discord", "token")?.string == "" || CustomConfig.config.node("discord", "channel").string == "")) {
             SendDiscordChannel()
         }
     }
