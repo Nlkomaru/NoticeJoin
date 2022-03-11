@@ -9,20 +9,20 @@
  *   You should have received a copy of the CC0 Public Domain Dedication along with this software.
  *   If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+package com.noticemc.noticeconnect.events
 
-package com.noticemc.noticeconnect.events;
+import com.velocitypowered.api.event.Subscribe
+import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent
+import java.util.*
 
-import com.velocitypowered.api.event.Subscribe;
-import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
+class PlayerLoginEvent {
+    @Subscribe
+    fun onPlayerLogin(event: PlayerChooseInitialServerEvent) {
+        val player = event.player
+        list.add(player.uniqueId)
+    }
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.UUID;
-
-public class PlayerLoginEvent {
-    static HashSet<UUID> list  = new HashSet<>();
-    @Subscribe public void onPlayerLogin(PlayerChooseInitialServerEvent event) {
-        var player = event.getPlayer();
-        list.add(player.getUniqueId());
+    companion object {
+        var list = HashSet<UUID>()
     }
 }
