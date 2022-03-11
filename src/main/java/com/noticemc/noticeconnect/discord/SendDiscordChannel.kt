@@ -25,7 +25,7 @@ class SendDiscordChannel {
 
     init {
         val token: String? = config.node("discord", "token").string
-        val channelID: String = config.node("discord", "channel-id").string.toString()
+        val channelID: String = config.node("discord", "channel").string.toString()
         try {
             jda = JDABuilder.createDefault(token, GatewayIntent.GUILD_MESSAGES).disableCache(CacheFlag.VOICE_STATE, CacheFlag.EMOTE).build()
             jda!!.awaitReady()
