@@ -13,20 +13,16 @@
 package com.noticemc.noticeconnect.database
 
 import com.noticemc.noticeconnect.files.CustomConfig
-import org.spongepowered.configurate.CommentedConfigurationNode
 import java.io.File
 import java.nio.file.Path
-import java.sql.Connection
-import java.sql.DriverManager
-import java.sql.SQLException
+import java.sql.*
 
 class Database {
 
     fun connect(dataDirectory: Path?) {
-        val databaseNode: CommentedConfigurationNode = CustomConfig.config.node("database")
         if (!isConnected()) {
             Class.forName("org.sqlite.JDBC")
-            val file = File(dataDirectory.toString(), databaseNode.node("database").string + ".db")
+            val file = File(dataDirectory.toString(), CustomConfig.config.database.database + ".db")
             if (!file.parentFile.exists()) {
                 file.parentFile.mkdirs()
             }

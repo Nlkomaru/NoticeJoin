@@ -9,21 +9,17 @@
  *   You should have received a copy of the CC0 Public Domain Dedication along with this software.
  *   If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-package com.noticemc.noticeconnect.events
 
-import com.velocitypowered.api.event.Subscribe
-import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent
-import java.util.*
+package com.noticemc.noticeconnect.discord
 
-class PlayerLoginEvent {
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-    @Subscribe
-    fun onPlayerLogin(event: PlayerChooseInitialServerEvent) {
-        val player = event.player
-        list.add(player.uniqueId)
-    }
+@Serializable
+data class DiscordWebhookData(val embeds: ArrayList<DiscordWebhookEmbed>)
 
-    companion object {
-        var list = HashSet<UUID>()
-    }
-}
+@Serializable
+data class DiscordWebhookEmbed(var color: Int, var author: Author)
+
+@Serializable
+data class Author(val name: String, val url: String? = null, @SerialName("icon_url") val iconUrl: String)

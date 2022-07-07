@@ -13,35 +13,39 @@
 package com.noticemc.noticeconnect.files
 
 import com.typesafe.config.ConfigRenderOptions
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.hocon.Hocon
 import kotlinx.serialization.hocon.encodeToConfig
 import org.spongepowered.configurate.CommentedConfigurationNode
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
-import java.io.BufferedWriter
-import java.io.FileOutputStream
-import java.io.OutputStreamWriter
-import java.io.PrintWriter
+import java.io.*
 import java.nio.file.Path
 import kotlin.io.path.createFile
 import kotlin.io.path.exists
 
-object ObjectMapperExample {
+private const val ver = "2.0.0"
+private const val firstMessage = "<gray>[<yellow>初見さんいらっしゃい</yellow>] <light_purple><name>さんがはじめて<currentServerName>サーバーに入りました!"
+private const val joinMessage = "<yellow><gold><name></gold>さんが<gold>サーバー<gold><gray>(<currentServerName>)</gray>にやってきました!"
+private const val leftMessage = "<yellow><gold><name></gold>さんが<gold>サーバー<gold><gray>(<currentServerName>)</gray>から離れました"
+private const val discordFirstJoin = "%(PlayerName) さんがサーバーに初参加です"
+private const val discordJoin = "%(PlayerName) さんがサーバーに参加しました"
+private const val discordLeft = "%(PlayerName) さんがサーバーから退出しました"
+private const val defaultMode = "Chat"
+private const val databaseName = "NoticeConnect"
+
+object SerializeConfig {
 
     fun main(path: Path) {
-        val ver = "1.0.0"
-        val config = Config(ver,
-            Message(listOf("<gray>[<yellow>初見さんいらっしゃい</yellow>] <light_purple><name>さんがはじめて<currentServerName>サーバーに入りました!"),
-                listOf("<yellow><gold><name></gold>さんが<gold>サーバー<gold><gray>(<currentServerName>)</gray>にやってきました!"),
-                listOf("<yellow><gold><name></gold>さんが<gold>サーバー<gold><gray>(<currentServerName>)</gray>から離れました")),
-            Database("NoticeConnect"),
-            HashMap(),
-            Discord("", "", DiscordMessage("%(PlayerName) さんがサーバーに初参加です", "%(PlayerName) さんがサーバーに参加しました", "%(PlayerName) さんがサーバーから退出しました")))
+
+        val message = Message(listOf(firstMessage), listOf(joinMessage), listOf(leftMessage))
+        val database = Database(databaseName)
+        val replace = HashMap<String, String>()
+        val discord = Discord("", DiscordMessage(discordFirstJoin, discordJoin, discordLeft))
+        val config = Config(ver, message, database, replace, discord, defaultMode)
+
         val encode = hocon.encodeToConfig(config)
 
         val renderOptions = ConfigRenderOptions.defaults().setOriginComments(false).setComments(false).setFormatted(true).setJson(false)
         val string = encode.root().render(renderOptions)
+
         if (!path.exists()) {
             path.createFile()
             val fw = PrintWriter(BufferedWriter(OutputStreamWriter(FileOutputStream(path.toFile()), "UTF-8")))
@@ -49,7 +53,7 @@ object ObjectMapperExample {
             fw.close()
         } else {
             val verNode: CommentedConfigurationNode? = HoconConfigurationLoader.builder().path(path).build().load().node("version")
-            if (verNode == null || verNode.string != ver) {
+            if (verNode?.string != ver) {
                 path.toFile().deleteOnExit()
                 val fw = PrintWriter(BufferedWriter(OutputStreamWriter(FileOutputStream(path.toFile()), "UTF-8")))
                 fw.write(string)
@@ -60,20 +64,3 @@ object ObjectMapperExample {
 
 }
 
-@OptIn(ExperimentalSerializationApi::class)
-private val hocon = Hocon
-
-@Serializable
-data class DiscordMessage(val firstJoin: String, val join: String, val left: String)
-
-@Serializable
-data class Discord(val token: String, val channel: String, val message: DiscordMessage)
-
-@Serializable
-data class Message(val firstJoin: List<String>, val join: List<String>, val left: List<String>)
-
-@Serializable
-data class Database(val database: String)
-
-@Serializable
-data class Config(val version: String, val message: Message, val database: Database, val replace: Map<String, String>, val discord: Discord)

@@ -14,7 +14,6 @@ package com.noticemc.noticeconnect.commands
 
 import com.noticemc.noticeconnect.NoticeConnect
 import com.noticemc.noticeconnect.database.Database
-import com.noticemc.noticeconnect.discord.SendDiscordChannel
 import com.noticemc.noticeconnect.files.CustomConfig
 import com.velocitypowered.api.command.SimpleCommand
 import org.slf4j.Logger
@@ -29,9 +28,6 @@ class ReloadCommand : SimpleCommand {
         val config = CustomConfig()
         config.getConfigFile(dir)
         sqlConnection()
-        if (!(CustomConfig.config.node("discord", "token").string == "" || CustomConfig.config.node("discord", "channel-id").string == "")) {
-            SendDiscordChannel()
-        }
         logger.info("NoticeConnectを再読み込みしました")
     }
 

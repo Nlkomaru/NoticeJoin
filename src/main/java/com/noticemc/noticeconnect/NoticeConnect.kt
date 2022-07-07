@@ -15,10 +15,7 @@ package com.noticemc.noticeconnect
 import com.google.inject.Inject
 import com.noticemc.noticeconnect.commands.ReloadCommand
 import com.noticemc.noticeconnect.database.Database
-import com.noticemc.noticeconnect.discord.SendDiscordChannel
-import com.noticemc.noticeconnect.events.PlayerJoinEvent
-import com.noticemc.noticeconnect.events.PlayerLeftEvent
-import com.noticemc.noticeconnect.events.PlayerLoginEvent
+import com.noticemc.noticeconnect.events.*
 import com.noticemc.noticeconnect.files.CustomConfig
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
@@ -36,13 +33,10 @@ class NoticeConnect {
         proxy = server
         Companion.logger = logger
         path = dataDirectory
-        val config = CustomConfig()
-        config.getConfigFile(path)
+        CustomConfig().getConfigFile(path)
         sqlConnection()
         logger.info("今までに" + joinedPlayerCount() + "人のプレイヤーがサーバーを訪れました")
-        if (!(CustomConfig.config.node("discord", "token")?.string == "" || CustomConfig.config.node("discord", "channel").string == "")) {
-            SendDiscordChannel()
-        }
+
     }
 
     private fun joinedPlayerCount(): Int {
@@ -60,10 +54,10 @@ class NoticeConnect {
 
     @Subscribe
     fun onProxyInitialization(event: ProxyInitializeEvent?) {
-        proxy?.eventManager?.register(this, PlayerJoinEvent())
-        proxy?.eventManager?.register(this, PlayerLeftEvent())
-        proxy?.eventManager?.register(this, PlayerLoginEvent())
-        val commandManager = proxy?.commandManager
+        proxy.eventManager?.register(this, PlayerJoinEvent())
+        proxy.eventManager?.register(this, PlayerLeftEvent())
+        proxy.eventManager?.register(this, PlayerLoginEvent())
+        val commandManager = proxy.commandManager
         val meta = commandManager?.metaBuilder("NoticeConnect")?.build()
         commandManager?.register(meta, ReloadCommand())
     }
@@ -73,18 +67,18 @@ class NoticeConnect {
         try {
             sql!!.connect(path)
         } catch (e: Exception) {
-            logger?.error("Failed to connect to database")
+            logger.error("Failed to connect to database")
             e.printStackTrace()
         }
         if (Database.isConnected()) {
-            logger?.info("Connected to database")
+            logger.info("Connected to database")
         }
         Database.initializeDatabase()
     }
 
     companion object {
-        var proxy: ProxyServer? = null
-        var logger: Logger? = null
-        var path: Path? = null
+        lateinit var proxy: ProxyServer
+        lateinit var logger: Logger
+        lateinit var path: Path
     }
 }

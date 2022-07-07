@@ -12,16 +12,15 @@
  */
 package com.noticemc.noticeconnect.events
 
-import com.noticemc.noticeconnect.NoticeConnect
+import com.noticemc.noticeconnect.Utils.mm
+import com.noticemc.noticeconnect.Utils.sendAudienceMessage
+import com.noticemc.noticeconnect.Utils.sendWebHook
 import com.noticemc.noticeconnect.database.Database
-import com.noticemc.noticeconnect.discord.SendDiscordChannel
+import com.noticemc.noticeconnect.discord.*
 import com.noticemc.noticeconnect.files.CustomConfig
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.player.ServerPostConnectEvent
-import com.velocitypowered.api.proxy.ProxyServer
-import net.dv8tion.jda.api.EmbedBuilder
-import net.kyori.adventure.text.minimessage.MiniMessage
-import org.spongepowered.configurate.kotlin.extensions.getList
+import org.apache.commons.lang3.StringUtils
 import java.awt.Color
 import java.sql.Connection
 import java.util.*
@@ -37,37 +36,44 @@ class PlayerJoinEvent {
             return
         }
 
-        val mm = MiniMessage.miniMessage()
         val serverName = player.currentServer.get().serverInfo.name
-        val proxyServer: ProxyServer = NoticeConnect.proxy!!
+        val replaceName = CustomConfig.config.replace[serverName] ?: serverName
 
-        val replaceName = CustomConfig.config.node("replace").node(serverName).string ?: serverName
+        lateinit var discordJoin: String
+        val color: Int
 
-        val eb = EmbedBuilder()
-        val discordJoin: String?
+
+
+
         if (playerExists(player.uniqueId)) {
-            val loginMessage: String? = CustomConfig.config.node("message", "join").getList(String::class)?.random()
-            if (loginMessage != null && loginMessage != "" && !player.hasPermission("noticeconnect.hide.left")) {
+            val loginMessage: String = CustomConfig.config.message.join.random()
+
+            if (!StringUtils.isBlank(loginMessage) && !player.hasPermission("noticeconnect.hide.left")) {
                 val replacedMessage = loginMessage.replace("<name>", player.username).replace("<currentServerName>", replaceName)
-                proxyServer.sendMessage(mm.deserialize(replacedMessage))
+                sendAudienceMessage(mm.deserialize(replacedMessage))
             }
-            discordJoin = (CustomConfig.config.node("discord", "message", "join").string)?.replace("%(PlayerName)", player.username)
-            eb.setColor(Color.GREEN)
+            color = Integer.valueOf(Integer.toHexString(Color.GREEN.rgb).substring(2), 16)
+            discordJoin = CustomConfig.config.discord.message.join.replace("%(PlayerName)", player.username)
         } else {
-            val loginMessage: String? = CustomConfig.config.node("message", "firstJoin").getList(String::class)?.random()
-            if (loginMessage != null && loginMessage != "") {
+            val loginMessage: String = CustomConfig.config.message.firstJoin.random()
+            if (!StringUtils.isBlank(loginMessage)) {
                 val replacedMessage = loginMessage.replace("<name>", player.username).replace("<currentServerName>", replaceName)
-                proxyServer.sendMessage(mm.deserialize(replacedMessage))
+
+                sendAudienceMessage(mm.deserialize(replacedMessage))
                 addPlayerLoginData(player.uniqueId)
+
             }
-            discordJoin = (CustomConfig.config.node("discord", "message", "firstJoin").string)?.replace("%" + "(PlayerName)", player.username)
-            eb.setColor(Color.YELLOW)
+            color = Integer.valueOf(Integer.toHexString(Color.YELLOW.rgb).substring(2), 16)
+            discordJoin = (CustomConfig.config.discord.message.firstJoin).replace("%" + "(PlayerName)", player.username)
         }
-        if (SendDiscordChannel.textChannel == null || discordJoin == "") {
+        if (discordJoin.isBlank()) {
             return
         }
-        eb.setAuthor(discordJoin, null, "https://crafthead.net/avatar/" + player.uniqueId)
-        SendDiscordChannel.textChannel!!.sendMessageEmbeds(eb.build()).queue()
+        val author = Author(discordJoin, null, "https://crafthead.net/avatar/" + player.uniqueId)
+        val embed = DiscordWebhookEmbed(color, author)
+
+        DiscordWebhookData(arrayListOf(embed)).sendWebHook()
+
     }
 
     private fun playerExists(uuid: UUID): Boolean {

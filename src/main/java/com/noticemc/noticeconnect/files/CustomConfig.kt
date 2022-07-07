@@ -12,14 +12,15 @@
  */
 package com.noticemc.noticeconnect.files
 
-import org.spongepowered.configurate.CommentedConfigurationNode
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader
-import org.spongepowered.configurate.loader.ConfigurationLoader
+import com.typesafe.config.ConfigFactory
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.hocon.Hocon
+import kotlinx.serialization.hocon.decodeFromConfig
 import java.io.File
-import java.io.IOException
 import java.nio.file.Path
 
 class CustomConfig {
+    @OptIn(ExperimentalSerializationApi::class)
     fun getConfigFile(dataDirectory: Path?) {
         val dataDirFile = dataDirectory!!.toFile()
         val file = File(dataDirFile, "config.conf")
@@ -27,21 +28,14 @@ class CustomConfig {
             file.parentFile.mkdirs()
         }
 
-        try {
-            ObjectMapperExample.main(file.toPath())
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
 
-        val configManager: ConfigurationLoader<CommentedConfigurationNode> = HoconConfigurationLoader.builder().path(file.toPath()).build()
-        try {
-            config = configManager.load()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+        SerializeConfig.main(file.toPath())
+
+        config = Hocon.decodeFromConfig(ConfigFactory.parseFile(file))
+
     }
 
     companion object {
-        lateinit var config: CommentedConfigurationNode
+        lateinit var config: Config
     }
 }

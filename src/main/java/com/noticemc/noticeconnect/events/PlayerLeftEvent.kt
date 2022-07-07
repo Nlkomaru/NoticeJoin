@@ -12,15 +12,14 @@
  */
 package com.noticemc.noticeconnect.events
 
-import com.noticemc.noticeconnect.NoticeConnect
-import com.noticemc.noticeconnect.discord.SendDiscordChannel
+import com.noticemc.noticeconnect.Utils.mm
+import com.noticemc.noticeconnect.Utils.sendAudienceMessage
+import com.noticemc.noticeconnect.Utils.sendWebHook
+import com.noticemc.noticeconnect.discord.*
 import com.noticemc.noticeconnect.files.CustomConfig
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
-import com.velocitypowered.api.proxy.ProxyServer
-import net.dv8tion.jda.api.EmbedBuilder
-import net.kyori.adventure.text.minimessage.MiniMessage
-import org.spongepowered.configurate.kotlin.extensions.getList
+import org.apache.commons.lang3.StringUtils
 import java.awt.Color
 
 class PlayerLeftEvent {
@@ -30,28 +29,27 @@ class PlayerLeftEvent {
         if (player.currentServer.isEmpty) {
             return
         }
-        val mm = MiniMessage.miniMessage()
+
         val serverName = player.currentServer.get().serverInfo.name ?: "server"
-        val proxyServer: ProxyServer? = NoticeConnect.proxy
 
-        val replaceName = CustomConfig.config.node("replace").node(serverName).string ?: serverName
+        val replaceName = CustomConfig.config.replace[serverName] ?: serverName
 
-        val leftMessage: String? = CustomConfig.config.node("message", "left").getList(String::class)?.random()
+        val leftMessage: String = CustomConfig.config.message.left.random()
 
-        if (leftMessage != null && leftMessage != "" && !player.hasPermission("noticeconnect.hide.left")) {
+        if (StringUtils.isBlank(leftMessage) && !player.hasPermission("noticeconnect.hide.left")) {
             val replacedMessage = leftMessage.replace("<name>", player.username).replace("<currentServerName>", replaceName)
-            proxyServer?.sendMessage(mm.deserialize(replacedMessage))
+
+            sendAudienceMessage(mm.deserialize(replacedMessage))
         }
 
-        SendDiscordChannel.textChannel ?: return
-
-        val discordLeftMessage = (CustomConfig.config.node("discord", "message", "left").string)?.replace("%(PlayerName)", player.username)
-        if (discordLeftMessage == "") {
+        val discordLeftMessage = CustomConfig.config.discord.message.firstJoin.replace("%(PlayerName)", player.username)
+        if (discordLeftMessage.isBlank()) {
             return
         }
-        val eb = EmbedBuilder()
-        eb.setColor(Color.RED)
-        eb.setAuthor(discordLeftMessage, null, "https://crafthead.net/avatar/" + player.uniqueId)
-        SendDiscordChannel.textChannel!!.sendMessageEmbeds(eb.build()).queue()
+        val author = Author(discordLeftMessage, null, "https://crafthead.net/avatar/" + player.uniqueId)
+        val embed = DiscordWebhookEmbed(Integer.valueOf(Integer.toHexString(Color.RED.rgb).substring(2), 16), author)
+
+        DiscordWebhookData(arrayListOf(embed)).sendWebHook()
+
     }
 }
