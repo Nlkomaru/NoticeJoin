@@ -42,7 +42,7 @@ class PlayerLeftEvent {
             sendAudienceMessage(mm.deserialize(replacedMessage))
         }
 
-        val discordLeftMessage = CustomConfig.config.discord.message.firstJoin.replace("%(PlayerName)", player.username)
+        val discordLeftMessage = CustomConfig.config.discord.message.left.replace("%(PlayerName)", player.username)
         if (discordLeftMessage.isBlank()) {
             return
         }
