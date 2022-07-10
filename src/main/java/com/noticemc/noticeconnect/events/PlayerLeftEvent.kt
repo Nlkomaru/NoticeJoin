@@ -36,7 +36,7 @@ class PlayerLeftEvent {
 
         val leftMessage: String = CustomConfig.config.message.left.random()
 
-        if (StringUtils.isBlank(leftMessage) && !player.hasPermission("noticeconnect.hide.left")) {
+        if (!StringUtils.isBlank(leftMessage) && !player.hasPermission("noticeconnect.hide.left")) {
             val replacedMessage = leftMessage.replace("<name>", player.username).replace("<currentServerName>", replaceName)
 
             sendAudienceMessage(mm.deserialize(replacedMessage))

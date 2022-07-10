@@ -20,6 +20,7 @@ import kotlinx.serialization.json.Json
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.title.Title
 import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -30,10 +31,19 @@ object Utils {
     fun sendAudienceMessage(message: Component) {
         val audience: Audience = NoticeConnect.proxy
 
-        if (CustomConfig.config.mode == "ActionBar") {
-            audience.sendActionBar(message)
-        } else {
-            audience.sendMessage(message)
+        when (CustomConfig.config.mode) {
+            "ActionBar" -> {
+                audience.sendActionBar(message)
+            }
+            "MainTitle" -> {
+                audience.showTitle(Title.title(message, mm.deserialize("")))
+            }
+            "SubTitle" -> {
+                audience.showTitle(Title.title(mm.deserialize(""),message))
+            }
+            else -> {
+                audience.sendMessage(message)
+            }
         }
 
     }
