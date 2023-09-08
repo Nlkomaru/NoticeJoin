@@ -79,6 +79,8 @@ object Utils {
             }
             con.disconnect()
 
+            Thread.sleep(10000)
+
         } catch (e: Exception) {
             e.printStackTrace()
         }

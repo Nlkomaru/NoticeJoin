@@ -42,9 +42,6 @@ class PlayerJoinEvent {
         lateinit var discordJoin: String
         val color: Int
 
-
-
-
         if (playerExists(player.uniqueId)) {
             val loginMessage: String = CustomConfig.config.message.join.random()
 
