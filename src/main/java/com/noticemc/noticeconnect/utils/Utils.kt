@@ -10,8 +10,9 @@
  *   If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-package com.noticemc.noticeconnect
+package com.noticemc.noticeconnect.utils
 
+import com.noticemc.noticeconnect.NoticeConnect
 import com.noticemc.noticeconnect.NoticeConnect.Companion.logger
 import com.noticemc.noticeconnect.discord.DiscordWebhookData
 import com.noticemc.noticeconnect.files.CustomConfig
@@ -78,8 +79,6 @@ object Utils {
                 logger.warn("error:$status")
             }
             con.disconnect()
-
-            Thread.sleep(10000)
 
         } catch (e: Exception) {
             e.printStackTrace()

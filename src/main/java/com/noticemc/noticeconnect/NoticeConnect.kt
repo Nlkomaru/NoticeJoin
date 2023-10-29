@@ -13,15 +13,29 @@
 package com.noticemc.noticeconnect
 
 import com.google.inject.Inject
+import com.noticemc.noticeconnect.commands.HelpCommand
+import com.noticemc.noticeconnect.commands.MessageCommand
 import com.noticemc.noticeconnect.commands.ReloadCommand
+import com.noticemc.noticeconnect.commands.TransferCommand
 import com.noticemc.noticeconnect.database.Database
-import com.noticemc.noticeconnect.events.*
+import com.noticemc.noticeconnect.events.PlayerJoinEvent
+import com.noticemc.noticeconnect.events.PlayerLeftEvent
+import com.noticemc.noticeconnect.events.PlayerLoginEvent
 import com.noticemc.noticeconnect.files.CustomConfig
+import com.noticemc.noticeconnect.utils.command.PlayerServerParser.registerPlayerParser
+import com.noticemc.noticeconnect.utils.command.RegisteredServerParser.registerServerParser
+import com.noticemc.noticeconnect.utils.command.Suggestion
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import org.slf4j.Logger
+import revxrsal.commands.autocomplete.SuggestionProvider
+import revxrsal.commands.command.CommandActor
+import revxrsal.commands.command.CommandParameter
+import revxrsal.commands.command.ExecutableCommand
+import revxrsal.commands.ktx.supportSuspendFunctions
+import revxrsal.commands.velocity.VelocityCommandHandler
 import java.nio.file.Path
 import java.sql.Connection
 
@@ -54,12 +68,62 @@ class NoticeConnect {
 
     @Subscribe
     fun onProxyInitialization(event: ProxyInitializeEvent?) {
+        registerEvents()
+        registerCommands()
+    }
+
+    private fun registerEvents() {
         proxy.eventManager?.register(this, PlayerJoinEvent())
         proxy.eventManager?.register(this, PlayerLeftEvent())
         proxy.eventManager?.register(this, PlayerLoginEvent())
-        val commandManager = proxy.commandManager
-        val meta = commandManager?.metaBuilder("NoticeConnect")?.build()
-        commandManager?.register(meta, ReloadCommand())
+    }
+
+    private fun registerCommands() {
+        val handler = VelocityCommandHandler.create(this, proxy)
+
+        handler.setSwitchPrefix("--")
+        handler.setFlagPrefix("--")
+        handler.supportSuspendFunctions()
+
+        handler.setHelpWriter { command, actor ->
+            java.lang.String.format(
+                """
+                <color:yellow>コマンド: <color:gray>%s %s
+                <color:yellow>説明: <color:gray>%s
+                
+                """.trimIndent(),
+                command.path.toRealString(),
+                command.usage,
+                command.description,
+            )
+        }
+
+        handler.autoCompleter.registerSuggestionFactory { parameter: CommandParameter ->
+            if (parameter.hasAnnotation(Suggestion::class.java)) {
+                val string = parameter.getAnnotation(Suggestion::class.java).value
+                if (string == "server") {
+                    return@registerSuggestionFactory SuggestionProvider { _: List<String>, _: CommandActor, _: ExecutableCommand ->
+                        return@SuggestionProvider proxy.allServers.map { it.serverInfo.name }
+                    }
+                }else if(string == "playerName"){
+                    return@registerSuggestionFactory SuggestionProvider { _: List<String>, _: CommandActor, _: ExecutableCommand ->
+                        return@SuggestionProvider proxy.allPlayers.map { it.username }
+                    }
+                }
+                return@registerSuggestionFactory null
+            }
+            null
+        }
+        handler.registerPlayerParser()
+        handler.registerServerParser()
+
+        with(handler) {
+            register(ReloadCommand())
+            register(HelpCommand())
+            register(MessageCommand())
+            register(TransferCommand())
+        }
+
     }
 
     private fun sqlConnection() {

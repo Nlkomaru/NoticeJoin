@@ -12,9 +12,9 @@
  */
 package com.noticemc.noticeconnect.events
 
-import com.noticemc.noticeconnect.Utils.mm
-import com.noticemc.noticeconnect.Utils.sendAudienceMessage
-import com.noticemc.noticeconnect.Utils.sendWebHook
+import com.noticemc.noticeconnect.utils.Utils.mm
+import com.noticemc.noticeconnect.utils.Utils.sendAudienceMessage
+import com.noticemc.noticeconnect.utils.Utils.sendWebHook
 import com.noticemc.noticeconnect.discord.*
 import com.noticemc.noticeconnect.files.CustomConfig
 import com.velocitypowered.api.event.Subscribe

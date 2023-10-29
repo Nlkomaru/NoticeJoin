@@ -14,8 +14,8 @@ package com.noticemc.noticeconnect.files
 
 import com.typesafe.config.ConfigRenderOptions
 import kotlinx.serialization.hocon.encodeToConfig
-import org.spongepowered.configurate.CommentedConfigurationNode
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader
+import ninja.leaping.configurate.commented.CommentedConfigurationNode
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 import java.io.*
 import java.nio.file.Path
 import kotlin.io.path.createFile
@@ -52,8 +52,8 @@ object SerializeConfig {
             fw.write(string)
             fw.close()
         } else {
-            val verNode: CommentedConfigurationNode? = HoconConfigurationLoader.builder().path(path).build().load().node("version")
-            if (verNode?.string != ver) {
+            val verNode: CommentedConfigurationNode = HoconConfigurationLoader.builder().setPath(path).build().load().getNode("version")
+            if (verNode.string != ver) {
                 path.toFile().deleteOnExit()
                 val fw = PrintWriter(BufferedWriter(OutputStreamWriter(FileOutputStream(path.toFile()), "UTF-8")))
                 fw.write(string)

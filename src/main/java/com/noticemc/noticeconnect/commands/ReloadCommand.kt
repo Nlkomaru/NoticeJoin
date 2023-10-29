@@ -13,26 +13,32 @@
 package com.noticemc.noticeconnect.commands
 
 import com.noticemc.noticeconnect.NoticeConnect
+import com.noticemc.noticeconnect.NoticeConnect.Companion.logger
 import com.noticemc.noticeconnect.database.Database
 import com.noticemc.noticeconnect.files.CustomConfig
 import com.velocitypowered.api.command.SimpleCommand
 import org.slf4j.Logger
+import revxrsal.commands.annotation.Command
+import revxrsal.commands.annotation.Description
+import revxrsal.commands.annotation.Subcommand
+import revxrsal.commands.velocity.annotation.CommandPermission
+import revxrsal.commands.velocity.core.VelocityActor
 import java.nio.file.Path
 
-class ReloadCommand : SimpleCommand {
+@Command("noticeconnect" ,"ne")
+@CommandPermission("noticeconnect.reload")
+class ReloadCommand {
     var sql: Database? = null
-    private val logger: Logger? = NoticeConnect.logger
-    private val dir: Path? = NoticeConnect.path
-    override fun execute(invocation: SimpleCommand.Invocation) {
-        logger!!.info("Reloading...")
+    private val dir: Path = NoticeConnect.path
+
+    @Subcommand("reload")
+    @Description("Reload NoticeConnect")
+    fun reloadCommand(actor :VelocityActor) {
+        actor.reply("Reloading...")
         val config = CustomConfig()
         config.getConfigFile(dir)
         sqlConnection()
-        logger.info("NoticeConnectを再読み込みしました")
-    }
-
-    override fun hasPermission(invocation: SimpleCommand.Invocation): Boolean {
-        return invocation.source().hasPermission("noticeconnect.reload")
+        actor.reply("NoticeConnectを再読み込みしました")
     }
 
     private fun sqlConnection() {
@@ -40,11 +46,11 @@ class ReloadCommand : SimpleCommand {
         try {
             sql!!.connect(dir)
         } catch (e: Exception) {
-            logger!!.error("Failed to connect to database")
+            logger.error("Failed to connect to database")
             e.printStackTrace()
         }
         if (Database.isConnected()) {
-            logger!!.info("Connected to database")
+            logger.info("Connected to database")
         }
         Database.initializeDatabase()
     }
