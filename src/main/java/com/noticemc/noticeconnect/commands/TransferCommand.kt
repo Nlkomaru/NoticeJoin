@@ -10,7 +10,7 @@ import revxrsal.commands.annotation.Subcommand
 import revxrsal.commands.command.CommandActor
 import revxrsal.commands.velocity.annotation.CommandPermission
 
-@Command("noticeconnect", "ne")
+@Command("noticeconnect", "ntc")
 @CommandPermission("noticeconnect.transfer")
 class TransferCommand {
 

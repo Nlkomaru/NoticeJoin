@@ -25,7 +25,7 @@ import revxrsal.commands.velocity.annotation.CommandPermission
 import revxrsal.commands.velocity.core.VelocityActor
 import java.nio.file.Path
 
-@Command("noticeconnect" ,"ne")
+@Command("noticeconnect" ,"ntc")
 @CommandPermission("noticeconnect.reload")
 class ReloadCommand {
     var sql: Database? = null

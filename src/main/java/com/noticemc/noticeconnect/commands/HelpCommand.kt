@@ -10,7 +10,7 @@ import revxrsal.commands.command.CommandActor
 import revxrsal.commands.help.CommandHelp
 
 
-@Command("noticeconnect", "ne")
+@Command("noticeconnect", "ntc")
 class HelpCommand {
     @Subcommand("help")
     @Description("Show help for NoticeConnect")

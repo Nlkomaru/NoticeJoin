@@ -9,7 +9,7 @@ import revxrsal.commands.annotation.Description
 import revxrsal.commands.annotation.Subcommand
 import revxrsal.commands.velocity.annotation.CommandPermission
 
-@Command("noticeconnect" ,"ne")
+@Command("noticeconnect" ,"ntc")
 @CommandPermission("noticeconnect.message")
 class MessageCommand {
 
