@@ -30,7 +30,7 @@ class PlayerCommand {
         servers.forEach{ server ->
             val serverName = server.serverInfo.name
             val players = server.playersConnected.joinToString(", ") { it.username }
-            val message = mm.deserialize("<yellow>${serverName}</yellow> $players").toGsonText()
+            val message = "$serverName $players"
             actor.reply(message)
         }
     }
