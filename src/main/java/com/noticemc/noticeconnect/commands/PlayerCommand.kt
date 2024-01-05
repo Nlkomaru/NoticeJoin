@@ -29,8 +29,9 @@ class PlayerCommand {
         val servers = proxy.allServers
         servers.forEach{ server ->
             val serverName = server.serverInfo.name
-            val players = server.playersConnected.map { it.username }.joinToString(", ")
-            mm.deserialize("<yellow>${serverName}</yellow> $players").toGsonText()
+            val players = server.playersConnected.joinToString(", ") { it.username }
+            val message = mm.deserialize("<yellow>${serverName}</yellow> $players").toGsonText()
+            actor.reply(message)
         }
     }
 }
