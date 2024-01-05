@@ -1,23 +1,24 @@
 /*
- *  <NoticeConnect>-<A login message plugin that runs on Velocity>
+ * NoticeConnect-A login message plugin that runs on Velocity
  *
- *  Written in 2021  by Nikomaru <nikomaru@nikomaru.dev>
+ * Written in 2021-2024  by Nikomaru <nikomaru@nikomaru.dev>
  *
- *      To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the
- * public domain worldwide.
- *      This software is distributed without any warranty.
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide.
+ * This software is distributed without any warranty.
  *
- *      You should have received a copy of the CC0 Public Domain Dedication along with this software.
- *      If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software.
+ * If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 package com.noticemc.noticeconnect.events
 
+import com.noticemc.noticeconnect.database.Database
+import com.noticemc.noticeconnect.discord.Author
+import com.noticemc.noticeconnect.discord.DiscordWebhookData
+import com.noticemc.noticeconnect.discord.DiscordWebhookEmbed
+import com.noticemc.noticeconnect.files.CustomConfig
 import com.noticemc.noticeconnect.utils.Utils.mm
 import com.noticemc.noticeconnect.utils.Utils.sendAudienceMessage
 import com.noticemc.noticeconnect.utils.Utils.sendWebHook
-import com.noticemc.noticeconnect.database.Database
-import com.noticemc.noticeconnect.discord.*
-import com.noticemc.noticeconnect.files.CustomConfig
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.player.ServerPostConnectEvent
 import org.apache.commons.lang3.StringUtils

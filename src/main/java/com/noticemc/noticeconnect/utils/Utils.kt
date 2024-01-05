@@ -1,13 +1,13 @@
 /*
- * <NoticeConnect>-<A login message plugin that runs on Velocity>
+ * NoticeConnect-A login message plugin that runs on Velocity
  *
- * Written in 2022  by Nikomaru <nikomaru@nikomaru.dev>
+ * Written in 2021-2024  by Nikomaru <nikomaru@nikomaru.dev>
  *
- *   To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide.
- *   This software is distributed without any warranty.
+ * To the extent possible under law, the author(s) have dedicated all copyright and related and neighboring rights to this software to the public domain worldwide.
+ * This software is distributed without any warranty.
  *
- *   You should have received a copy of the CC0 Public Domain Dedication along with this software.
- *   If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
+ * You should have received a copy of the CC0 Public Domain Dedication along with this software.
+ * If not, see <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
 package com.noticemc.noticeconnect.utils
@@ -21,6 +21,8 @@ import kotlinx.serialization.json.Json
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.kyori.adventure.title.Title
 import java.io.OutputStream
 import java.net.HttpURLConnection
@@ -50,6 +52,14 @@ object Utils {
     }
 
     val mm = MiniMessage.miniMessage()
+
+    fun Component.toLegacyText(): String {
+        return LegacyComponentSerializer.legacySection().serialize(this)
+    }
+
+    fun Component.toGsonText(): String {
+        return GsonComponentSerializer.gson().serialize(this)
+    }
 
     fun DiscordWebhookData.sendWebHook() {
         val json = Json.encodeToString(this)
