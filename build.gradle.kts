@@ -24,28 +24,28 @@ val lampVersion = "3.1.7"
 val velocityVersion = "3.2.0-SNAPSHOT"
 val serializationVersion = "1.6.0"
 val typesafeVersion = "1.4.3"
-val adventureVersion = "4.14.0"
+val adventureVersion = "4.15.0"
 val sqliteVersion = "3.43.2.1"
 val commonLangVersion = "3.12.0"
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
-    compileOnly("com.velocitypowered","velocity-api", velocityVersion)
-    annotationProcessor("com.velocitypowered","velocity-api", velocityVersion)
+    compileOnly("com.velocitypowered:velocity-api:$velocityVersion")
+    annotationProcessor("com.velocitypowered:velocity-api:$velocityVersion")
 
-    implementation("com.github.Revxrsal.Lamp","common", lampVersion)
-    implementation("com.github.Revxrsal.Lamp","velocity",lampVersion)
+    implementation("com.github.Revxrsal.Lamp:common:$lampVersion")
+    implementation("com.github.Revxrsal.Lamp:velocity:$lampVersion")
 
-    implementation("com.typesafe","config",typesafeVersion)
-    implementation("org.jetbrains.kotlinx","kotlinx-serialization-hocon", serializationVersion)
-    implementation("org.jetbrains.kotlinx","kotlinx-serialization-json", serializationVersion)
+    implementation("com.typesafe:config:$typesafeVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-hocon:$serializationVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
 
-    implementation("net.kyori","adventure-api",adventureVersion)
-    implementation("net.kyori","adventure-text-minimessage",adventureVersion)
+    implementation("net.kyori:adventure-api:$adventureVersion")
+    implementation("net.kyori:adventure-text-minimessage:$adventureVersion")
 
-    implementation("org.xerial","sqlite-jdbc",sqliteVersion)
+    implementation("org.xerial:sqlite-jdbc:$sqliteVersion")
 
-    implementation("org.apache.commons","commons-lang3", commonLangVersion)
+    implementation("org.apache.commons:commons-lang3:$commonLangVersion")
 }
 
 java {
